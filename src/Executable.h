@@ -40,6 +40,7 @@ class Executable {
             }
             argv[a.size()] = NULL;
             
+	    int err;
             pid_t pid = fork();
             if (exec.find("exit") != string::npos) {
                 exit(0);
@@ -51,14 +52,15 @@ class Executable {
             else if (pid == 0) {
             	execvp(cmd.c_str(), argv);
             	perror(exec.c_str());
-		exit(0);
+		exit(1);
             	return false;
             }
             else {
-            	if (waitpid(pid, 0, 0) < 0) {
+            	if (waitpid(pid, &err, 0) < 0) {
             		perror("error: unable to wait");
             		return false;
             	}
+                return err == 0;
             }
             return true;
 

@@ -19,7 +19,8 @@ class UserInterface
     public:
         UserInterface()
         {
-            
+            gethostname(hostname, 128);
+            username = getlogin();
         };
         
         void run()
@@ -28,7 +29,7 @@ class UserInterface
             queue<Connector *> cons;
             queue<Executable *> exes;
             while(true) {
-                cout << "$ ";
+                cout << username << "@" << hostname << "$ ";
                 getline(cin, userInput);
                 parse(userInput, cons, exes);
                 bool lastrun = true;
@@ -100,6 +101,8 @@ class UserInterface
                 }
             }
         };
+
+        char * username, hostname[128];
         
 };
 
