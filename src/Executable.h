@@ -1,6 +1,9 @@
 #ifndef EXECUTABLE_H
 #define EXECUTABLE_H
 
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 #include <sstream>
