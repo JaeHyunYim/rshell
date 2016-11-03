@@ -1,0 +1,2 @@
+echo "Testing Exit"
+exit

@@ -17,6 +17,7 @@ class Executable {
         {
             exec = s;
         };
+	virtual ~Executable() {}
         
         virtual bool run() {
             stringstream s2;
@@ -47,7 +48,7 @@ class Executable {
             else if (pid == 0) {
             	execvp(cmd.c_str(), argv);
             	perror(exec.c_str());
-            	exit(0);
+		exit(0);
             	return false;
             }
             else {
