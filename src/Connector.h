@@ -7,9 +7,9 @@ using namespace std;
 class Connector
 {
     public:
-        Connector() {};
-        virtual bool evaluate(bool) = 0;
-        virtual ~Connector() {};
+        Connector() {}; //Constructor
+        virtual bool evaluate(bool) = 0; //Virtual function, to be redefined within each connector subclass
+        virtual ~Connector() {}; //Destructor
 };
 
 #endif

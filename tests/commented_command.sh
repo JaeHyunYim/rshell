@@ -6,4 +6,8 @@ echo "Testing comment then command"
 #ls -a
 echo "Testing comment at end"
 ls #
+
+(echo #hello)
+(#echo hello)
+
 exit

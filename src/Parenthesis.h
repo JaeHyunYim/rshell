@@ -1,68 +1,59 @@
-#ifndef USERINTERFACE_H
-#define USERINTERFACE_H
+#ifndef PARENTHESIS_H
+#define PARENTHESIS_H
 
 #include <iostream>
 #include <string>
 #include <queue>
 #include <sstream>
 #include "Executable.h"
-#include "Parenthesis.h"
 #include "Or.h"
 #include "And.h"
 #include "Connector.h"
 #include "SemiColon.h"
 #include "Test.h"
-#include <unistd.h>
-#include <cstdlib>
-
+#
 using namespace std;
 
-class UserInterface
+class Parenthesis : public Executable
 {
-    public:
-        UserInterface()
-        {
-            gethostname(hostname, 128);	//Gets hostname
-            username = getlogin(); //Gets the username
-        };
-        
-        void run()
-        {
-            string userInput;	//holds the userinput
-            queue<Connector *> cons;	//Creates a queue of connectors
-            queue<Executable *> exes;	//Create a queue full of executables 
-            while(true) {
-                cout << username << "@" << hostname << "$ ";	//Prints out hostname and login stuff
-                getline(cin, userInput);
+	public:
+		Parenthesis() {};	//Constructor 
+		Parenthesis(const string &s)	//Constructor that takes in a string
+		{
+			exec = s;
+		}
+		bool run()
+		{
+            queue<Connector *> cons;	//Holds a queue of connectors
+            queue<Executable *> exes;	//Holds a queue of executables
 
-                parse(userInput, cons, exes);	//Parses what the uesr inputted and puts it into either cons or exes
+                parse(exec, cons, exes); //parses everything
                 bool lastrun = true;
-                while (!exes.empty()) {	//Executes all of the commands and connectors
-                    Executable * top = exes.front();
-                    if (cons.size() == exes.size()) { //if it is a connector do this
+                while (!exes.empty()) {
+                    Executable * top = exes.front();	//Sets top to the first executable
+                    if (cons.size() == exes.size()) {	//Do this if the cons size and execs size is the same
                         Connector * con = cons.front();
                         cons.pop();
                         lastrun = con->evaluate(lastrun);
                         delete con;
                     }
-                    if (lastrun) {	//If true then make lastrun the top of run
-                        lastrun = top->run();
+                    if (lastrun) {
+                        lastrun = top->run();			//If lastrun is true then set lastrun is equal to the top of run
                     }
                     exes.pop();
                     delete top;
                 }
-            }
-        };
-        
-    private:
-        void parse(const string &input, queue<Connector *> &cons, queue<Executable *> &exes) {	//implementation of parse everything
+            return lastrun;
+		}
+	private:
+		void parse(const string &input, queue<Connector *> &cons, queue<Executable *> &exes) {	//parses the connectors sand execs
             int args = 0;
             int begin = 0;
             int end = 0;
             bool addpr = false;
             string holder;
             for(unsigned i = 0; i < input.size(); i++) {
-        		if (input[i] == '#')	//If it is a # then ignore everything to the right of it
+        		if (input[i] == '#')
         		{
         		    if(i != 0)
         		    {
@@ -71,7 +62,7 @@ class UserInterface
         		    	i = input.size();
         		    }		
         		}
-                else if(input[i] == '(')	//If there is a parenthesis then send it to the parenthesis class
+                else if(input[i] == '(')
                 {
                     args++;
                     begin = ++i;
@@ -90,7 +81,7 @@ class UserInterface
                     begin = i+1;
                     addpr = true;
                 }
-                else if (input[i] == ';') {	//If it is a ; then continue on, it's always true
+                else if (input[i] == ';') {	//If input is equal to ;, then come here
                     end = i;
                     if (!addpr) {
                         add_exe(input.substr(begin, end - begin), exes);
@@ -106,7 +97,7 @@ class UserInterface
                     begin = end+1;
                     i++;
                 }
-                else if (input[i] == '&' && i+1 != input.size() && input[i+1] == '&') {	//If there is an and, check if the left is true then run the right side if it is
+                else if (input[i] == '&' && i+1 != input.size() && input[i+1] == '&') {	//If input is equal to &, then come here
                     end = i;
                     if (!addpr) {
                         add_exe(input.substr(begin, end - begin), exes);
@@ -121,7 +112,7 @@ class UserInterface
                     begin = i+2;
                     i+=2;
                 }
-                else if (input[i] == '|' && i+1 != input.size() && input[i+1] == '|') {	//If there is a ||, check if the left is true and only run the right if it is false
+                else if (input[i] == '|' && i+1 != input.size() && input[i+1] == '|') {	//If input is equal to ||, then come here
                     end = i;
                     if (!addpr) {
                         add_exe(input.substr(begin, end - begin), exes);
@@ -136,7 +127,7 @@ class UserInterface
                     begin = i+2;
                     i+=2;
                 }
-                else if (i == input.size()-1) {	//If we've reached the end, then add it to the queue
+                else if (i == input.size()-1) {
                     end = i+1;
                     if (!addpr) {
                         add_exe(input.substr(begin, end + 1 - begin), exes);
@@ -149,7 +140,7 @@ class UserInterface
             }
         };
 
-        void add_exe(const string &input, queue<Executable *> &exes) {	//checks to see if there is a test or [] in the cmd
+        void add_exe(const string &input, queue<Executable *> &exes) {	//Tests to see if the cmd is test
             stringstream str(input);
             string cmd;
             str >> cmd;
@@ -161,8 +152,9 @@ class UserInterface
             }
         }
 
-        char * username, hostname[128];
-        
+	protected:
+		string exec;	//Creates a string that holds the current executable
 };
+
 
 #endif

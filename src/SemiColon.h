@@ -6,7 +6,8 @@
 class SemiColon : public Connector
 {
     public:
-        SemiColon() {}
+        SemiColon() {}	//Constructor
+		//Always returns true
         bool evaluate(bool check){
             return true;
         }
