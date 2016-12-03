@@ -14,7 +14,7 @@
 #include "Test.h"
 #include <unistd.h>
 #include <cstdlib>
-
+#include "Cd.h"
 using namespace std;
 
 class UserInterface
@@ -155,6 +155,9 @@ class UserInterface
             str >> cmd;
             if (cmd == "test" || cmd == "[") {
                 exes.push(new Test(input));
+            }
+            else if (cmd == "cd") {
+                exes.push(new Cd(input));
             }
             else {
                 exes.push(new Executable(input));

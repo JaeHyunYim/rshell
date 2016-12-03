@@ -62,7 +62,5 @@ class Test : public Executable
      		cout<<out<<endl;
      		return ret;
      	}
-     protected: 
-     	string exec;
 };
 #endif

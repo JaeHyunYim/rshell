@@ -11,7 +11,7 @@
 #include "Connector.h"
 #include "SemiColon.h"
 #include "Test.h"
-#
+#include "Cd.h"
 using namespace std;
 
 class Parenthesis : public Executable
@@ -146,6 +146,9 @@ class Parenthesis : public Executable
             str >> cmd;
             if (cmd == "test" || cmd == "[") {
                 exes.push(new Test(input));
+            }
+            else if (cmd == "cd") {
+                exes.push(new Cd(input));
             }
             else {
                 exes.push(new Executable(input));
